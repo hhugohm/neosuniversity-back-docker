@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+    nginx:
+        build:
+            context: .
+            dockerfile: ./build/nginx/Dockerfile
+        container_name: neosuniversity_nginx
+        volumes:
+            - ./app/:/var/www/app
+        ports:
+            - 8001:80
+        networks:
+            - neosuniversity
+        depends_on:
+            - php  
+    php:
+        build:
+            context: .
+            dockerfile: ./build/php/Dockerfile
+        container_name: neosuniversity_php
+        environment:
+            APP_ENV: dev
+            DATABASE_URL: mysql://root:root@mysql:3306/neosuniversity?serverVersion=5.7
+        volumes:
+            - ./app/:/var/www/app
+        ports:
+            - 8000:8000
+        networks:
+            - neosuniversity
+        depends_on:
+            - mysql
+    mysql:
+        image: mysql:8.0.21
+        container_name: neosuniversity_mysql
+        security_opt:
+            - seccomp:unconfined
+        command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci','--default-authentication-plugin=mysql_native_password']
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+        ports:
+            - 3306:3306
+        volumes:
+            - ./app/scriptsSQL:/docker-entrypoint-initdb.d/:rw
+            - ./mysql:/var/lib/mysql
+        networks:
+            - neosuniversity
+networks:
+    symfony:
