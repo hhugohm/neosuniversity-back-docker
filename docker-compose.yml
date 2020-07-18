@@ -46,4 +46,4 @@ services:
         networks:
             - neosuniversity
 networks:
-    symfony:
+    neosuniversity:
