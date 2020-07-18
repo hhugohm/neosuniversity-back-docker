@@ -24,8 +24,6 @@ services:
             DATABASE_URL: mysql://root:root@mysql:3306/neosuniversity?serverVersion=5.7
         volumes:
             - ./app/:/var/www/app
-        ports:
-            - 8000:8000
         networks:
             - neosuniversity
         depends_on:
